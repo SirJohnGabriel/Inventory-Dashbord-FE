@@ -5,7 +5,7 @@ export {
 } from './ThemeContext';
 
 export {
-    SidebarContext,
-    type SidebarContextProps,
-    useSidebar,
+  SidebarContext,
+  type SidebarContextProps,
+  useSidebar,
 } from './SidebarContext';

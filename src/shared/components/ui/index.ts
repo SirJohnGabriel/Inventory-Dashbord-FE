@@ -1,5 +1,13 @@
 export { Spinner } from './Spinner';
-export { Card } from './Card';
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardAction,
+  CardDescription,
+  CardContent,
+} from './Card';
 export { Button } from './Button';
 export { ButtonVariants } from './ButtonVariants';
 export { Alert, AlertTitle, AlertDescription } from './Alert';
@@ -60,10 +68,10 @@ export {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
-}
-from './DropdownMenu';
+} from './DropdownMenu';
 
-export { Tooltip,
+export {
+  Tooltip,
   TooltipTrigger,
   TooltipContent,
   TooltipProvider,
@@ -80,5 +88,4 @@ export {
   TableRow,
   TableCell,
   TableCaption,
-}
-from './Table';
+} from './Table';

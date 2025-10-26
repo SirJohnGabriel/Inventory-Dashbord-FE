@@ -89,7 +89,7 @@ export function Layout({ children }: LayoutProps) {
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <Header />
+        <Header className="sticky top-0 z-50" />
         <main className="flex-1 min-h-0 overflow-auto">
           <div className="py-6 h-full">{children}</div>
         </main>

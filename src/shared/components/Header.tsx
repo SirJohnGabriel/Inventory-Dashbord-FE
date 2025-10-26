@@ -10,7 +10,7 @@ export function Header({ className }: { className?: string }) {
       <div className="ps-4 pe-8 flex items-center justify-between h-18.5">
         <div className="flex items-center gap-4">
           <SidebarTrigger />
-          <Separator orientation="vertical" className='h-5' />
+          <Separator orientation="vertical" className="h-5" />
           <h1 className="text-base-bold">Products</h1>
         </div>
 
