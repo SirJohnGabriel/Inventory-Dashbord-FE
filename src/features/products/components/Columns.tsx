@@ -1,18 +1,13 @@
 import type { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 
-import { Button } from '@/shared/components/ui/Button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/shared/components/ui/DropdownMenu';
+import { Button } from '@/shared/components/ui';
 import type { Product } from '../types';
+import { ProductActionsCell } from './ProductActionsCell';
 
-export const columns: ColumnDef<Product>[] = [
+export const createColumns = (
+  onDelete: (productId: string) => Promise<void>
+): ColumnDef<Product>[] => [
   {
     accessorKey: 'name',
     header: ({ column }) => {
@@ -76,31 +71,7 @@ export const columns: ColumnDef<Product>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const product = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel className='text-primary'>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(product.sku)}
-            >
-              Copy product SKU
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit Product</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-500">
-              Delete Product
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <ProductActionsCell product={product} onDelete={onDelete} />;
     },
     size: 60,
   },

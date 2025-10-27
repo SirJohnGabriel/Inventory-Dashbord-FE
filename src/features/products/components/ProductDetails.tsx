@@ -74,7 +74,17 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <label className="text-sm font-medium text-muted-foreground">
               Stock Quantity
             </label>
-            <p className="mt-1 text-sm font-semibold">
+            <p
+              className={`mt-1 text-sm font-semibold ${
+                product.stockQuantity === 0
+                  ? 'text-red-600 dark:text-red-400'
+                  : product.stockQuantity < 10
+                    ? 'text-orange-600 dark:text-orange-400'
+                    : product.stockQuantity < 25
+                      ? 'text-yellow-600 dark:text-yellow-500'
+                      : 'text-green-600 dark:text-green-400'
+              }`}
+            >
               {product.stockQuantity}
             </p>
           </div>
@@ -127,13 +137,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           </div>
         )}
 
-        <div className="pt-4 border-t">
-          <label className="text-sm font-medium text-muted-foreground">
+        <div className="border-t">
+          {/* <label className="text-sm font-medium text-muted-foreground">
             Product ID
           </label>
           <p className="mt-1 text-xs font-mono break-all text-muted-foreground">
             {product.id}
-          </p>
+          </p> */}
         </div>
 
         <div>

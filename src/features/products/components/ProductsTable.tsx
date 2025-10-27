@@ -1,17 +1,4 @@
-import * as React from 'react';
-import type {
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-} from '@tanstack/react-table';
-import {
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
+import { flexRender } from '@tanstack/react-table';
 import { ChevronDown } from 'lucide-react';
 
 import { Button } from '@/shared/components/ui/Button';
@@ -31,61 +18,22 @@ import {
   TableRow,
 } from '@/shared/components/ui/Table';
 import { Card } from '@/shared/components/ui';
-import { productsService } from '../services/products.service';
 import type { Product } from '../types';
-import { columns } from './columns';
-import { logger } from '@/shared/utils';
+import { useProductsTable } from '../hooks';
 
 interface ProductsTableProps {
-  onSelectProduct: (product: Product) => void;
+  onSelectProduct: (product: Product | null) => void;
+  selectedProduct: Product | null;
 }
 
-export function ProductsTable({ onSelectProduct }: ProductsTableProps) {
-  const [data, setData] = React.useState<Product[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+export function ProductsTable({
+  onSelectProduct,
+  selectedProduct,
+}: ProductsTableProps) {
+  const { table, data, loading, columns } = useProductsTable(
+    selectedProduct,
+    onSelectProduct
   );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await productsService.fetchProducts();
-        setData((response as unknown as Product[]) || []);
-      } catch (error) {
-        logger.error('Failed to fetch products:', error);
-        setData([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const table = useReactTable({
-    data,
-    columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
-  });
 
   if (loading) {
     return <div className="p-8 text-center">Loading products...</div>;
