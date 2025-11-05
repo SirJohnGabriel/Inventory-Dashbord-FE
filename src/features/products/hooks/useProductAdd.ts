@@ -54,7 +54,8 @@ export function useProductAdd(onProductAdded: () => void) {
 
     // Description validation (optional, only validate length if provided)
     if (formData.description.length > 250) {
-      newErrors.description = 'Product description must not exceed 250 characters.';
+      newErrors.description =
+        'Product description must not exceed 250 characters.';
     }
 
     // Category validation
@@ -87,7 +88,8 @@ export function useProductAdd(onProductAdded: () => void) {
     } else {
       const stockNum = parseInt(formData.stockQuantity, 10);
       if (isNaN(stockNum) || stockNum < 0 || !Number.isInteger(stockNum)) {
-        newErrors.stockQuantity = 'Stock quantity must be a non-negative value.';
+        newErrors.stockQuantity =
+          'Stock quantity must be a non-negative value.';
       }
     }
 
@@ -100,7 +102,7 @@ export function useProductAdd(onProductAdded: () => void) {
       toast.error('Please fix the validation errors');
       return;
     }
-    // Test logging
+
     setIsSaving(true);
     try {
       const payload: AddProductRequest = {
