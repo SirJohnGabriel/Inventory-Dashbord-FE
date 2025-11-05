@@ -1,5 +1,6 @@
 import { flexRender } from '@tanstack/react-table';
 import { ChevronDown } from 'lucide-react';
+import * as React from 'react';
 
 import { Button } from '@/shared/components/ui/Button';
 import {
@@ -20,19 +21,41 @@ import {
 import { Card } from '@/shared/components/ui';
 import type { Product } from '../types';
 import { useProductsTable } from '../hooks';
+import type { VisibilityState } from '@tanstack/react-table';
 
 interface ProductsTableProps {
   onSelectProduct: (product: Product | null) => void;
-  selectedProduct: Product | null;
+  onEditProduct?: (product: Product) => void;
+  onAddProduct?: () => void;
+  reloadKey?: number;
 }
 
 export function ProductsTable({
   onSelectProduct,
-  selectedProduct,
+  onEditProduct,
+  onAddProduct,
+  reloadKey,
 }: ProductsTableProps) {
-  const { table, data, loading, columns } = useProductsTable(
-    selectedProduct,
-    onSelectProduct
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+
+  const handleColumnVisibilityChange = React.useCallback(
+    (
+      updater: VisibilityState | ((old: VisibilityState) => VisibilityState)
+    ) => {
+      setColumnVisibility(updater);
+      forceUpdate();
+    },
+    []
+  );
+
+  const { table, data, loading } = useProductsTable(
+    onSelectProduct,
+    columnVisibility,
+    handleColumnVisibilityChange,
+    onEditProduct,
+    reloadKey
   );
 
   if (loading) {
@@ -50,6 +73,9 @@ export function ProductsTable({
           }
           className="max-w-sm"
         />
+        <Button variant="outline" className="ml-2" onClick={onAddProduct}>
+          Add New Product
+        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -61,16 +87,19 @@ export function ProductsTable({
               .getAllColumns()
               .filter((column) => column.getCanHide())
               .map((column) => {
+                const meta = column.columnDef.meta as
+                  | { displayName?: string }
+                  | undefined;
+                const displayName = meta?.displayName || column.id;
                 return (
                   <DropdownMenuCheckboxItem
                     key={column.id}
-                    className="capitalize"
                     checked={column.getIsVisible()}
                     onCheckedChange={(value) =>
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {displayName}
                   </DropdownMenuCheckboxItem>
                 );
               })}
@@ -84,6 +113,7 @@ export function ProductsTable({
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
+                    if (!header.column.getIsVisible()) return null;
                     return (
                       <TableHead key={header.id}>
                         {header.isPlaceholder
@@ -107,20 +137,23 @@ export function ProductsTable({
                     onClick={() => onSelectProduct(row.original)}
                     className="cursor-pointer"
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
+                    {row.getVisibleCells().map((cell) => {
+                      if (!cell.column.getIsVisible()) return null;
+                      return (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      );
+                    })}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={columns.length}
+                    colSpan={table.getVisibleLeafColumns().length}
                     className="h-24 text-center"
                   >
                     No results.

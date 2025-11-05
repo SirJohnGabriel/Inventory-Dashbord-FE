@@ -18,8 +18,11 @@ import { logger } from '@/shared/utils';
 import { toast } from 'sonner';
 
 export function useProductsTable(
-  selectedProduct: Product | null,
-  onSelectProduct: (product: Product | null) => void
+  onSelectProduct: (product: Product | null) => void,
+  columnVisibility: VisibilityState,
+  setColumnVisibility: React.Dispatch<React.SetStateAction<VisibilityState>>,
+  onEditProduct?: (product: Product) => void,
+  reloadKey?: number
 ) {
   const [data, setData] = React.useState<Product[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -27,8 +30,6 @@ export function useProductsTable(
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   const handleDeleteProduct = React.useCallback(
@@ -36,10 +37,8 @@ export function useProductsTable(
       try {
         await productsService.removeProductById(productId);
 
-        // Clear selected product if it's the one being deleted
-        if (selectedProduct?.id === productId) {
-          onSelectProduct(null);
-        }
+        // Clear selected product by calling parent handler
+        onSelectProduct(null);
 
         // Immediately update the state after successful deletion
         setData((prevData) => {
@@ -55,11 +54,14 @@ export function useProductsTable(
         throw error; // Re-throw to let the caller handle it
       }
     },
-    [selectedProduct, onSelectProduct]
+    [onSelectProduct]
   );
 
-  // Create columns directly without useMemo to ensure fresh reference
-  const columns = createColumns(handleDeleteProduct);
+  // Use useMemo for columns to ensure they update with state changes
+  const columns = React.useMemo(
+    () => createColumns(handleDeleteProduct, onEditProduct),
+    [handleDeleteProduct, onEditProduct]
+  );
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -77,7 +79,8 @@ export function useProductsTable(
     };
 
     fetchData();
-  }, []);
+    // include reloadKey so parent can trigger a refetch after updates
+  }, [reloadKey]);
 
   const table = useReactTable({
     data,

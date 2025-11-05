@@ -1,10 +1,5 @@
 import { apiService } from './api.service';
-import {
-  type Response,
-  type LoginRequest,
-  IDENTITY_ERROR_MESSAGES,
-  type ErrorBase,
-} from '@shared/types';
+import { type Response, type LoginRequest } from '@shared/types';
 import {
   decodeJWTToken,
   extractUserFromJWT,
@@ -45,11 +40,9 @@ export const authService = {
       if (isDevelopment()) {
         logger.error('Change Password Error', error);
       }
-      const loginError = error as ErrorBase;
-      const errorCode = loginError.details?.errorCode;
-      throw new Error(
-        (errorCode && IDENTITY_ERROR_MESSAGES[errorCode]) || 'Login failed'
-      );
+
+      // Re-throw the original error to preserve all details
+      throw error;
     }
   },
 

@@ -24,11 +24,13 @@ import { useProductActions } from '../hooks';
 interface ProductActionsCellProps {
   product: Product;
   onDelete: (productId: string) => Promise<void>;
+  onEdit?: (product: Product) => void;
 }
 
 export function ProductActionsCell({
   product,
   onDelete,
+  onEdit,
 }: ProductActionsCellProps) {
   const {
     showDeleteDialog,
@@ -64,7 +66,9 @@ export function ProductActionsCell({
             Copy product SKU
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Edit Product</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onEdit && onEdit(product)}>
+            Edit Product
+          </DropdownMenuItem>
           <DropdownMenuItem className="text-red-500" onClick={openDeleteDialog}>
             Delete Product
           </DropdownMenuItem>
