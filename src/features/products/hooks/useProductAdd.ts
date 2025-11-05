@@ -100,7 +100,7 @@ export function useProductAdd(onProductAdded: () => void) {
       toast.error('Please fix the validation errors');
       return;
     }
-
+    // Test logging
     setIsSaving(true);
     try {
       const payload: AddProductRequest = {
