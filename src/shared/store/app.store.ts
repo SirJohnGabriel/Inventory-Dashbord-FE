@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import type { AuthUser } from '@shared/types';
+import type { AuthUser, Lookup, Response } from '@shared/types';
 import { isDevelopment } from '@shared/utils';
 
 interface AppState {
@@ -12,11 +12,17 @@ interface AppState {
   // User data
   currentUser: AuthUser | null;
 
+  // Lookups data
+  lookups: Lookup | null;
+  isLookupsLoading: boolean;
+
   // Actions
   initialize: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   setCurrentUser: (user: AuthUser | null) => void;
+  setLookups: (lookups: Response<Lookup>) => void;
+  setLookupsLoading: (loading: boolean) => void;
   reset: () => void;
 }
 
@@ -25,6 +31,8 @@ const initialState = {
   isLoading: false,
   error: null,
   currentUser: null,
+  lookups: null,
+  isLookupsLoading: false,
 };
 
 export const useAppStore = create<AppState>()(
@@ -46,6 +54,14 @@ export const useAppStore = create<AppState>()(
 
       setCurrentUser: (currentUser: AuthUser | null) => {
         set({ currentUser }, false, 'setCurrentUser');
+      },
+
+      setLookups: (lookups: Lookup) => {
+        set({ lookups, isLookupsLoading: false }, false, 'setLookups');
+      },
+
+      setLookupsLoading: (isLookupsLoading: boolean) => {
+        set({ isLookupsLoading }, false, 'setLookupsLoading');
       },
 
       reset: () => {

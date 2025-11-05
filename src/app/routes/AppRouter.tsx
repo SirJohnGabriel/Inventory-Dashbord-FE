@@ -9,6 +9,7 @@ import {
 import { routes } from './index';
 import { AuthGuard, GuestOnly, ProtectedRedirect } from '@shared/guards';
 import { useRoutePreloading, usePageTitle } from '@shared/hooks';
+import { Toaster } from '@/shared/components/ui';
 
 // Lazy load authentication-related components
 const Login = lazy(() =>
@@ -72,6 +73,7 @@ export function AppRouter() {
       <BrowserRouter>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <AppRoutes />
+          <Toaster />
         </ThemeProvider>
       </BrowserRouter>
     </ErrorBoundary>
