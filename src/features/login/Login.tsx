@@ -16,6 +16,7 @@ import {
   Label,
 } from '@/shared/components/ui/';
 import { LockIcon, UserIcon } from '@phosphor-icons/react';
+import { normalizeError } from '@/shared/utils/error.utils';
 
 export function Login() {
   const [username, setUsername] = useState('');
@@ -44,7 +45,18 @@ export function Login() {
       await authService.login(username, password);
       navigate('/products');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      const normalizedError = normalizeError(err);
+      console.log('Normalized error:', normalizedError);
+
+      // Check for email validation error
+      if (
+        normalizedError.code === 'identity/validation-error' &&
+        normalizedError.message?.toLowerCase().includes('valid email')
+      ) {
+        setError('Invalid email address');
+      } else {
+        setError(normalizedError.message || 'Login failed');
+      }
     } finally {
       setIsLoading(false);
     }

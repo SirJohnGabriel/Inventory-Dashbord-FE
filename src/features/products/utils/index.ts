@@ -1,0 +1,1 @@
+export { getCategoryName } from './categoryMapper';

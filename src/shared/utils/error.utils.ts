@@ -18,7 +18,7 @@ export function normalizeError(error: unknown): AppError {
 
     return {
       message: data?.message || error.message || 'Network error occurred',
-      code: data?.code || status,
+      code: data?.errorCode || data?.code || status,
       status,
       details: data,
     };
@@ -44,7 +44,9 @@ export function normalizeError(error: unknown): AppError {
     const errorObj = error as Record<string, unknown>;
     return {
       message: (errorObj.message as string) || 'An unknown error occurred',
-      code: errorObj.code as string | number | undefined,
+      code:
+        (errorObj.errorCode as string | number | undefined) ||
+        (errorObj.code as string | number | undefined),
       status: errorObj.status as number | undefined,
       details: errorObj,
     };

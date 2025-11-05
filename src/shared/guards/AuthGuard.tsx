@@ -45,7 +45,7 @@ export function AuthGuard({
 
   // If authentication is not required but user is authenticated
   if (!requireAuth && isUserAuthenticated) {
-    return <Navigate to={redirectTo || '/projects'} replace />;
+    return <Navigate to={redirectTo || '/products'} replace />;
   }
 
   // Role-based authorization checks
@@ -82,12 +82,12 @@ export function AuthGuard({
   }
 
   // Default behavior: redirect based on authentication status
-  return <Navigate to={isUserAuthenticated ? '/projects' : '/login'} replace />;
+  return <Navigate to={isUserAuthenticated ? '/products' : '/login'} replace />;
 }
 
 /**
  * ProtectedRedirect component for simple authentication-based redirects
- * Redirects to /projects if authenticated, /login if not
+ * Redirects to /products if authenticated, /login if not
  */
 export function ProtectedRedirect() {
   return <AuthGuard />;
