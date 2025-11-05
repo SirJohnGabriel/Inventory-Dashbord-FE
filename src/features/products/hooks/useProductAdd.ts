@@ -47,28 +47,26 @@ export function useProductAdd(onProductAdded: () => void) {
 
     // Name validation
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = 'Product name is required.';
     } else if (formData.name.length > 250) {
-      newErrors.name = 'Name must not exceed 250 characters';
+      newErrors.name = 'Product name must not exceed 250 characters.';
     }
 
-    // Description validation
-    if (!formData.description.trim()) {
-      newErrors.description = 'Description is required';
-    } else if (formData.description.length > 250) {
-      newErrors.description = 'Description must not exceed 250 characters';
+    // Description validation (optional, only validate length if provided)
+    if (formData.description.length > 250) {
+      newErrors.description = 'Product description must not exceed 250 characters.';
     }
 
     // Category validation
     if (!formData.categoryId) {
-      newErrors.categoryId = 'Category is required';
+      newErrors.categoryId = 'Category ID is required.';
     }
 
     // SKU validation
     if (!formData.sku.trim()) {
-      newErrors.sku = 'SKU is required';
+      newErrors.sku = 'SKU is required.';
     } else if (formData.sku.length > 100) {
-      newErrors.sku = 'SKU must not exceed 100 characters';
+      newErrors.sku = 'SKU must not exceed 100 characters.';
     }
 
     // Price validation
@@ -77,7 +75,7 @@ export function useProductAdd(onProductAdded: () => void) {
     } else {
       const priceNum = parseFloat(formData.price);
       if (isNaN(priceNum) || priceNum < 0) {
-        newErrors.price = 'Price must be a valid positive number';
+        newErrors.price = 'Price must be a non-negative value.';
       } else if (!/^\d+(\.\d{1,2})?$/.test(formData.price)) {
         newErrors.price = 'Price must have at most 2 decimal places';
       }
@@ -89,8 +87,7 @@ export function useProductAdd(onProductAdded: () => void) {
     } else {
       const stockNum = parseInt(formData.stockQuantity, 10);
       if (isNaN(stockNum) || stockNum < 0 || !Number.isInteger(stockNum)) {
-        newErrors.stockQuantity =
-          'Stock quantity must be a valid non-negative integer';
+        newErrors.stockQuantity = 'Stock quantity must be a non-negative value.';
       }
     }
 
