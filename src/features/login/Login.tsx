@@ -47,15 +47,21 @@ export function Login() {
     } catch (err) {
       const normalizedError = normalizeError(err);
       console.log('Normalized error:', normalizedError);
+      console.log(normalizedError.code);
+      console.log(normalizedError.message);
 
       // Check for email validation error
       if (
         normalizedError.code === 'identity/validation-error' &&
         normalizedError.message?.toLowerCase().includes('valid email')
       ) {
-        setError('Invalid email address');
+        setError('Invalid email address, please input a valid email.');
+      } else if (normalizedError.code === 'identity/invalid-credential') {
+        setError(
+          'Invalid email or password, please try again or reset password'
+        );
       } else {
-        setError(normalizedError.message || 'Login failed');
+        setError('Login failed, please try again later.');
       }
     } finally {
       setIsLoading(false);
